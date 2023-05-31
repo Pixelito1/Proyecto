@@ -10,7 +10,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-controls = new THREE.OrbitControls(camera, renderer.domElement);
+//controls = new THREE.OrbitControls(camera, renderer.domElement);
+var controls = new THREE.DeviceOrientationControls(camera);
 
 // Agregar eventos de clic izquierdo y derecho
 let isLeftMouseDown = false;
