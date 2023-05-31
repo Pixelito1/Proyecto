@@ -8,17 +8,13 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-//controls = new THREE.OrbitControls(camera, renderer.domElement);
+effect = new THREE.StereoEffect( renderer );
+    effect.setSize( window.innerWidth, window.innerHeight );
 var controls = new THREE.DeviceOrientationControls(camera);
-
-// Agregar eventos de clic izquierdo y derecho
 let isLeftMouseDown = false;
 let isRightMouseDown = false;
 const maxCameraZ = 45;
 const minCameraZ = 20;
-
 document.addEventListener("mousedown", function (event) {
   if (event.button === 0) {
     isLeftMouseDown = true;
@@ -26,7 +22,6 @@ document.addEventListener("mousedown", function (event) {
     isRightMouseDown = true;
   }
 });
-
 document.addEventListener("mouseup", function (event) {
   if (event.button === 0) {
     isLeftMouseDown = false;
@@ -34,152 +29,213 @@ document.addEventListener("mouseup", function (event) {
     isRightMouseDown = false;
   }
 });
-
-///////////////////----Luces---////////////////////////////////////////
-const light = new THREE.PointLight(0xffffff, 1, 60);
-light.position.set(0, 10, 30);
-light.castShadow = true;
-scene.add(light);
-
-light.shadow.mapSize.width = 512; // default
-light.shadow.mapSize.height = 512; // default
-light.shadow.camera.near = 0.5; // default
-light.shadow.camera.far = 100; // default
-
 ////////////////---TOSAS LAS COSAS---//////////////////////////////////
 //piso/
 const geoPiso = new THREE.BoxGeometry(20, 0.1, 35);
 const textPiso = new THREE.TextureLoader().load("mat/suelo.jpg");
-const matPiso = new THREE.MeshPhongMaterial({ map: textPiso });
+const matPiso = new THREE.MeshBasicMaterial({ map: textPiso });
 const Piso = new THREE.Mesh(geoPiso, matPiso);
 scene.add(Piso);
 Piso.position.y = -5;
 Piso.position.z = 30;
 Piso.castShadow = false;
 Piso.receiveShadow = true;
-
 //pared
 const geoPared = new THREE.BoxGeometry(0.1, 10, 35);
+const geoPared2 = new THREE.BoxGeometry(20, 10, 0.1);
 const textPared = new THREE.TextureLoader().load("mat/pared.jpg");
-const matPared = new THREE.MeshPhongMaterial({ map: textPared });
-
+const matPared = new THREE.MeshBasicMaterial({ map: textPared });
 const Pared1 = new THREE.Mesh(geoPared, matPared);
 scene.add(Pared1);
 Pared1.position.x = 10;
 Pared1.position.y = 5;
-Pared1.castShadow = false;
-Pared1.receiveShadow = true;
-
 const Pared2 = new THREE.Mesh(geoPared, matPared);
 scene.add(Pared2);
 Pared2.position.x = -10;
 Pared2.position.y = 5;
-Pared2.castShadow = false;
-Pared2.receiveShadow = true;
-
+const Pared3 = new THREE.Mesh(geoPared2, matPared);
+scene.add(Pared3);
+Pared3.position.z = 17.5;
+Pared3.position.y = 5;
+const Pared4 = new THREE.Mesh(geoPared2, matPared);
+scene.add(Pared4);
+Pared4.position.z = -17.5;
+Pared4.position.y = 5;
 Piso.add(Pared1);
 Piso.add(Pared2);
-
+Piso.add(Pared3);
+Piso.add(Pared4);
 ////////////////////////////////
-class Cuadro {
-  constructor(position, rotation) {
-    this.position = position;
-    this.rotation = rotation;
-    this.loadCuadro();
-  }
-
-  loadCuadro() {
-    const textCuadro = new THREE.TextureLoader().load("mat/1wood.jpg");
-    const matCuadro = new THREE.MeshPhongMaterial({ map: textCuadro });
-    const loader = new THREE.FBXLoader();
-    loader.load("mat/cuadro.fbx", (object) => {
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-          child.material = matCuadro;
-        }
-      });
-
-      object.scale.set(0.0285, 0.0285, 0.0285);
-      object.position.copy(this.position);
-      object.rotation.y = this.rotation;
-      object.castShadow = true;
-      object.receiveShadow = false;
-
-      scene.add(object);
-    });
-  }
-}
-
-// Crear instancias de los cuadros en diferentes posiciones y rotaciones
-const cuadro1 = new Cuadro(new THREE.Vector3(-9.9, 0, 38), 1.57);
-const cuadro2 = new Cuadro(new THREE.Vector3(-9.9, 0, 22), 1.57);
-const cuadro3 = new Cuadro(new THREE.Vector3(9.9, 0, 38), -1.57);
-const cuadro4 = new Cuadro(new THREE.Vector3(9.9, 0, 22), -1.57);
-
-const geometryPint = new THREE.BoxGeometry(0.1, 3.8, 3.8);
-const materialPint = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const Pintura = new THREE.Mesh(geometryPint, materialPint);
-scene.add(Pintura);
-Pintura.position.x = -9.9;
-Pintura.position.y = 0.2;
-Pintura.position.z = 38;
-
+const geometry = new THREE.BoxGeometry(0.1, 3.8, 3.8);
+const textPint1 = new THREE.TextureLoader().load("mat/pintu1.jpg");
+const material = new THREE.MeshBasicMaterial({ map: textPint1 });
+const Pint = new THREE.Mesh(geometry, material);
+scene.add(Pint);
+Pint.position.x = -9.9;
+Pint.position.z = 38;
+const textPint2 = new THREE.TextureLoader().load("mat/pintu2.jpg");
+const material2 = new THREE.MeshBasicMaterial({ map: textPint2 });
+const Pint2 = new THREE.Mesh(geometry, material2);
+scene.add(Pint2);
+Pint2.position.x = -9.9;
+Pint2.position.z = 22;
+const textPint3 = new THREE.TextureLoader().load("mat/pintu3.jpg");
+const material3 = new THREE.MeshBasicMaterial({ map: textPint3 });
+const Pint3 = new THREE.Mesh(geometry, material3);
+scene.add(Pint3);
+Pint3.position.x = 9.9;
+Pint3.position.z = 38;
+const textPint4 = new THREE.TextureLoader().load("mat/pintu4.jpg");
+const material4 = new THREE.MeshBasicMaterial({ map: textPint4 });
+const Pint4 = new THREE.Mesh(geometry, material4);
+scene.add(Pint4);
+Pint4.position.x = 9.9;
+Pint4.position.z = 22;
 ////////////////////////////////////////////////
-camera.position.z = 100;
-const helper = new THREE.CameraHelper(light.shadow.camera);
-scene.add(helper);
+const textro1 = new THREE.TextureLoader().load("mat/1wood.jpg");
+const matro1 = new THREE.MeshBasicMaterial({ map: textro1 });
+const geoTro1 = new THREE.BoxGeometry( 0.5, 0.5, 4 );
+const Tro1 = new THREE.Mesh( geoTro1, matro1 );
+scene.add( Tro1 );
+Pint.add(Tro1);
+Tro1.position.y=-2;
 
-// Raycaster
+const geoTro2 = new THREE.BoxGeometry( 0.5, 2.3, 0.5 );
+const Tro2 = new THREE.Mesh( geoTro2, matro1 );
+scene.add( Tro2 );
+Tro1.add(Tro2);
+Tro2.position.y=-1.4;
+
+const geoTro3 = new THREE.BoxGeometry( 0.5, 0.5, 3 );
+const Tro3 = new THREE.Mesh( geoTro3, matro1 );
+scene.add(Tro3);
+Tro2.add(Tro3);
+Tro3.position.y=-1.4;
+////////////
+const geoTroo1 = new THREE.BoxGeometry( 0.5, 0.5, 4 );
+const Troo1 = new THREE.Mesh( geoTroo1, matro1 );
+scene.add( Troo1 );
+Pint2.add(Troo1);
+Troo1.position.y=-2;
+
+const geoTroo2 = new THREE.BoxGeometry( 0.5, 2.3, 0.5 );
+const Troo2 = new THREE.Mesh( geoTroo2, matro1 );
+scene.add( Troo2 );
+Troo1.add(Troo2);
+Troo2.position.y=-1.4;
+
+const geoTroo3 = new THREE.BoxGeometry( 0.5, 0.5, 3 );
+const Troo3 = new THREE.Mesh( geoTroo3, matro1 );
+scene.add(Troo3);
+Troo2.add(Troo3);
+Troo3.position.y=-1.4;
+
+////////////
+const geoTrooo1 = new THREE.BoxGeometry( 0.5, 0.5, 4 );
+const Trooo1 = new THREE.Mesh( geoTrooo1, matro1 );
+scene.add( Trooo1 );
+Pint3.add(Trooo1);
+Trooo1.position.y=-2;
+
+const geoTrooo2 = new THREE.BoxGeometry( 0.5, 2.3, 0.5 );
+const Trooo2 = new THREE.Mesh( geoTrooo2, matro1 );
+scene.add( Trooo2 );
+Trooo1.add(Trooo2);
+Trooo2.position.y=-1.4;
+
+const geoTrooo3 = new THREE.BoxGeometry( 0.5, 0.5, 3 );
+const Trooo3 = new THREE.Mesh( geoTrooo3, matro1 );
+scene.add(Trooo3);
+Trooo2.add(Trooo3);
+Trooo3.position.y=-1.4;
+
+////////////
+const geoTroooo1 = new THREE.BoxGeometry( 0.5, 0.5, 4 );
+const Troooo1 = new THREE.Mesh( geoTroooo1, matro1 );
+scene.add( Troooo1 );
+Pint4.add(Troooo1);
+Troooo1.position.y=-2;
+
+const geoTroooo2 = new THREE.BoxGeometry( 0.5, 2.3, 0.5 );
+const Troooo2 = new THREE.Mesh( geoTroooo2, matro1 );
+scene.add( Troooo2 );
+Troooo1.add(Troooo2);
+Troooo2.position.y=-1.4;
+
+const geoTroooo3 = new THREE.BoxGeometry( 0.5, 0.5, 3 );
+const Troooo3 = new THREE.Mesh( geoTroooo3, matro1 );
+scene.add(Troooo3);
+Troooo2.add(Troooo3);
+Troooo3.position.y=-1.4;
+
+//////////////////////////////
+camera.position.z = 35;
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-document.addEventListener("mousemove", onMouseMove);
-
-function onMouseMove(event) {
-  // Normalizar las coordenadas del mouse
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  // Actualizar el rayo con la posición y dirección de la cámara
-  raycaster.setFromCamera(mouse, camera);
-
-  // Verificar la intersección entre el rayo y el objeto "Pintura"
-  const intersects = raycaster.intersectObject(Pintura);
-
-  if (intersects.length > 0) {
-    // Escalar el objeto en x y en y
-    Pintura.position.x = -9;
-    Pintura.scale.z = 1.3;
-    Pintura.scale.y = 1.3;
+function onMouseMove() {
+  const cameraDirection = new THREE.Vector3();
+  camera.getWorldDirection(cameraDirection);
+  raycaster.set(camera.position, cameraDirection);
+  const intersectsPint = raycaster.intersectObject(Pint);
+  if (intersectsPint.length > 0) {
+    Pint.position.x = -9;
+    Pint.position.y = 2.2;
+    Pint.scale.z = 1.5;
+    Pint.scale.y = 1.5;
   } else {
-    // Restablecer la posición y escala del objeto
-    Pintura.position.x = -9.9;
-    Pintura.scale.set(1, 1, 1);
+    Pint.position.x = -9.9;
+    Pint.scale.set(1, 1, 1);
+    Pint.position.y = 0;
+  }
+  const intersectsPint2 = raycaster.intersectObject(Pint2);
+  if (intersectsPint2.length > 0) {
+    Pint2.position.x = -9;
+    Pint2.scale.z = 1.5;
+    Pint2.scale.y = 1.5;
+    Pint2.position.y = 2.2;
+  } else {
+    Pint2.position.x = -9.9;
+    Pint2.scale.set(1, 1, 1);
+    Pint2.position.y = 0;
+  }
+  const intersectsPint3 = raycaster.intersectObject(Pint3);
+  if (intersectsPint3.length > 0) {
+    Pint3.position.x = 9;
+    Pint3.scale.z = 1.5;
+    Pint3.scale.y = 1.5;
+    Pint3.position.y = 2.2;
+  } else {
+    Pint3.position.x = 9.9;
+    Pint3.scale.set(1, 1, 1);
+    Pint3.position.y = 0;
+  }
+  const intersectsPint4 = raycaster.intersectObject(Pint4);
+  if (intersectsPint4.length > 0) {
+    Pint4.position.x = 9;
+    Pint4.scale.z = 1.5;
+    Pint4.scale.y = 1.5;
+    Pint4.position.y = 2.2;
+  } else {
+    Pint4.position.x = 9.9;
+    Pint4.scale.set(1, 1, 1);
+    Pint4.position.y = 0;
   }
 }
-
+document.addEventListener("mousemove", onMouseMove);
 function animate() {
   requestAnimationFrame(animate);
   if (isLeftMouseDown) {
-    camera.position.z += 0.1; // Ajusta la velocidad del movimiento según sea necesario
+    camera.position.z += 0.5; 
   }
-
   if (isRightMouseDown) {
-    camera.position.z -= 0.1; // Ajusta la velocidad del movimiento según sea necesario
+    camera.position.z -= 0.5; 
   }
-
   if (camera.position.z > maxCameraZ) {
     camera.position.z = maxCameraZ;
   }
-
   if (camera.position.z < minCameraZ) {
     camera.position.z = minCameraZ;
   }
-
   controls.update();
-  renderer.render(scene, camera);
+  effect.render(scene, camera);
 }
-
 animate();
